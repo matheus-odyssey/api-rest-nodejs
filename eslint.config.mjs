@@ -32,7 +32,7 @@ export default [
       'space-before-blocks': ['error', 'always'], // exigir espaço antes de {
       'space-in-parens': ['error', 'never'], // proibir espaços dentro de parênteses
       'array-bracket-spacing': ['error', 'never'], // proibir espaços dentro de arrays
-      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'error',
     },
   },
 ];
