@@ -40,16 +40,77 @@ describe('Transactions routes', () => {
 
     const cookies = createTransactionResponse.get('Set-Cookie')
 
-    const listTransactionResponse = await request(app.server)
+    const listTransactionsResponse = await request(app.server)
       .get('/transactions')
       .set('Cookie', cookies ?? [])
       .expect(200)
 
-    expect(listTransactionResponse.body.transactions).toEqual([
+    expect(listTransactionsResponse.body.transactions).toEqual([
       expect.objectContaining({
         title: 'New Transaction',
         amount: 500,
       }),
     ])
+  })
+
+  it('should be able to get a specific transaction', async () => {
+    const createTransactionResponse = await request(app.server)
+      .post('/transactions')
+      .send({
+        title: 'New Transaction',
+        amount: 500,
+        type: 'credit',
+      })
+
+    const cookies = createTransactionResponse.get('Set-Cookie')
+
+    const listTransactionsResponse = await request(app.server)
+      .get('/transactions')
+      .set('Cookie', cookies ?? [])
+      .expect(200)
+
+    const { id: transactionId } = listTransactionsResponse.body.transactions[0]
+
+    const getTransactionResponse = await request(app.server)
+      .get(`/transactions/${transactionId}`)
+      .set('Cookie', cookies ?? [])
+
+    expect(getTransactionResponse.body.transaction).toEqual(
+      expect.objectContaining({
+        title: 'New Transaction',
+        amount: 500,
+      }),
+    )
+  })
+  it('should be able to list all transactions', async () => {
+    const createTransactionResponse = await request(app.server)
+      .post('/transactions')
+      .send({
+        title: 'Credit Transaction',
+        amount: 500,
+        type: 'credit',
+      })
+
+    const cookies = createTransactionResponse.get('Set-Cookie')
+
+    await request(app.server)
+      .post('/transactions')
+      .set('Cookie', cookies ?? [])
+      .send({
+        title: 'Debit Transaction',
+        amount: 200,
+        type: 'debit',
+      })
+
+    const getSummaryResponse = await request(app.server)
+      .get('/transactions/summary')
+      .set('Cookie', cookies ?? [])
+      .expect(200)
+
+    expect(getSummaryResponse.body.summary).toEqual(
+      expect.objectContaining({
+        amount: 300,
+      }),
+    )
   })
 })
