@@ -5,6 +5,9 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    ignores: ['node_modules/**', 'build/**', 'dist/**', '*.js'],
+  },
+  {
     files: ['**/*.{ts,tsx,js}'],
     languageOptions: {
       parser: tseslint.parser,
