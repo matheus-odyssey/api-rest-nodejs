@@ -6,6 +6,15 @@ import { checkSessionIdExists } from '../middlewares/check-session-id-exists'
 
 // Cookies <-> Formas da gente manter contexto entre requisições
 
+/*
+- Unitários: unidade da sua aplicação
+- Integração: comunicação entre duas ou mais unidades
+- e2e - ponta a ponta: simulam um usuário operando na nossa aplicação
+    - front-end: abre a página de login digite o texto matheus@exmaple.com.br no campo com ID email, clique no botão
+    - back-end: chamadas HTTP, websockets
+
+Pirâmide de testes: e2e (não dependem de nenhuma tecnologia, não dependem de arquitetura)
+*/
 export async function transactionsRoutes(app: FastifyInstance) {
   app.get('/', { preHandler: [checkSessionIdExists] }, async (request) => {
     const { sessionId } = request.cookies
